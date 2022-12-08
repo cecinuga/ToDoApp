@@ -3,6 +3,7 @@ mod state;
 mod to_do;
 mod views;
 mod processes;
+mod json_serialization;
 
 
 async fn greet(req: HttpRequest) -> impl Responder{
@@ -12,16 +13,11 @@ async fn greet(req: HttpRequest) -> impl Responder{
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()>{
+    println!("[#]Server running on 127.0.0.1:8000");
+
     HttpServer::new(||{
-        println!("Function is firing.");
-        let app = App::new()
-            .route("/", web::get().to(greet))
-            .route("/{name}", web::get().to(greet));
-        
+        let app = App::new().configure(
+            views::views_factory);
         return app
-        })
-        .bind("127.0.0.1:8000")?
-        .workers(3)
-        .run()
-        .await
+    }).bind("127.0.0.1:8000")?.run().await
 }

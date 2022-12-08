@@ -1,18 +1,12 @@
 use actix_web::web;
 use std::env;
+
+mod to_do;
 mod path;
 mod auth;
 
 
 pub fn views_factory(app: &mut web::ServiceConfig){
-    let args: Vec<String> = env::args().collect();
-    let param: &String = &args[args.len()-1];
-
-    if param.as_str() == "cancel_logout"{
-        println!("logout view isn't being configured");
-        auth::auth_factory(app, false);
-    } else {
-        println!("logout view is being configured");
-        auth::auth_factory(app, true);
-    }
+    auth::auth_factory(app);
+    to_do::item_factory(app);
 }
